@@ -1,5 +1,6 @@
 from pyspark import SparkContext
 import re
+import json
 
 # Initialiser le contexte Spark
 sc = SparkContext(appName="AnalyseLogsApacheRDD")
@@ -65,3 +66,15 @@ key=lambda x: -x[1])
 print("Les 10 code http les plus frequent :")
 for url, count in most_asked_page:
  print(f"{[5]}: {count}")
+
+i = 1
+result = {}
+with open('web_server') as f:
+    lines = f.readlines()
+    for line in lines:
+        r = line.split('\t\t')
+        result[i] = {'timestamp': r[0], 'monitorip': r[1], 'monitorhost': r[2], 'monitorstatus': r[3], 'monitorid': r[4], 'resolveip': r[5]}
+        i += 1 
+print(result) 
+with open('data.json', 'w') as fp:
+    json.dump(result, fp)
