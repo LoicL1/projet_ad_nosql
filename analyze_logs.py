@@ -34,7 +34,7 @@ def parse_log_line(line):
 # Parser les logs
 parsed_logs_rdd = logs_rdd.map(parse_log_line).filter(lambda x: x is not
 None)
-
+'''
 # Afficher 10 logs parsés
 print("Exemple de logs parsés :")
 for log in parsed_logs_rdd.take(10):
@@ -48,9 +48,20 @@ key=lambda x: -x[1])
 print("Les 5 URLs les plus demandées :")
 for url, count in top_urls:
  print(f"{url}: {count}")
-
+'''
 '''
 nombre de requete pour http
 la taille moyenne des reponses par code http
 adresse ip la plus active 
 '''
+most_asked_page = parsed_logs_rdd.map(lambda x: (x[4], 1)).reduceByKey(lambda a, b: a + b).takeOrdered(5,
+key=lambda x: -x[1])
+print("Les 5 URLs les plus demandées :")
+for url, count in most_asked_page:
+ print(f"{url}: {count}")
+
+ commonhttpcode = parsed_logs_rdd.map(lambda x: (x[5], 1)).reduceByKey(lambda a, b: a + b).takeOrdered (10,
+key=lambda x: -x[1])
+print("Les 10 code http les plus frequent :")
+for url, count in most_asked_page:
+ print(f"{[5]}: {count}")
