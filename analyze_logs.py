@@ -72,8 +72,8 @@ result = {}
 with open('web_server') as f:
     lines = f.readlines()
     for line in lines:
-        r = line.split('\t\t')
-        result[i] = {'timestamp': r[0], 'monitorip': r[1], 'monitorhost': r[2], 'monitorstatus': r[3], 'monitorid': r[4], 'resolveip': r[5]}
+        r = parse_log_line.match(i)
+        result[i] = {'timestamp': r[1], 'monitorip': r[2], 'monitorhost': r[3], 'monitorstatus': r[4], 'monitorid': r[5], 'resolveip': r[6]}
         i += 1 
 print(result) 
 with open('data.json', 'w') as fp:
