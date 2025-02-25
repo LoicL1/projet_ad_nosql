@@ -3,7 +3,7 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
 # Initialisation de la session Spark
-spark = SparkSession.builder.appName("ip").config("spark.mongodb.output.uri", "mongodb://mongo:27017/logs.status_sort_by_ip").getOrCreate()
+spark = SparkSession.builder.appName("errormsg").config("spark.mongodb.output.uri", "mongodb://mongo:27017/logs.status_error").getOrCreate()
 
 # Lecture des logs depuis Kafka
 kafka_df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "kafka:9092").option("subscribe", "logs").load()
@@ -24,17 +24,15 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
 
 # Agrégation des logs par code HTTP
 
-status_sort_by_ip = parsed_logs.groupBy("ip",).agg(
-    collect_list("url").alias("urls"),
-    collect_list("status").alias("status")
+status_error = parsed_logs.groupBy("status","timestamp","method").agg(
+    collect_list("url").alias("url"),
+    collect_list("ip").alias("ip")
 )
-
-
 # Fonction pour écrire dans MongoDB (sans écraser)
 def write_to_mongo(df, epoch_id):
     df.write.format("mongo").mode("append").option("replaceDocument", "False").save()
 
 # Écriture des résultats dans MongoDB en streaming
-query = status_sort_by_ip.writeStream.outputMode("update").foreachBatch(write_to_mongo).start()
+query = status_error.writeStream.outputMode("update").foreachBatch(write_to_mongo).start()
 
 query.awaitTermination()
