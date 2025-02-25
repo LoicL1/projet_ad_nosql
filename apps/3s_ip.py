@@ -24,14 +24,14 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
 
 # Agrégation des logs par code HTTP
 
-status_sort_by_ip = parsed_logs.groupBy("ip", "status").agg(
-    collect_list("url").alias("urls")
+status_sort_by_ip = parsed_logs.groupBy("ip",).agg(
+    collect_list("url").alias("urls"), collect_list("status").alias("statuses")
 )
 
 
 # Fonction pour écrire dans MongoDB (sans écraser)
 def write_to_mongo(df, epoch_id):
-    df.write.format("mongo").mode("append").option("replaceDocument", "True").save()
+    df.write.format("mongo").mode("append").option("replaceDocument", "False").save()
 
 # Écriture des résultats dans MongoDB en streaming
 query = status_sort_by_ip.writeStream.outputMode("update").foreachBatch(write_to_mongo).start()
