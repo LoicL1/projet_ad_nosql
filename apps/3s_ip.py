@@ -22,9 +22,11 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
         col("log_parts")[9].cast("int").alias("size")  # Taille de la réponse
     )
 
-# Agrégation des logs par code HTTP
+# Agrégation des logs par adresse IP
 
 status_sort_by_ip = parsed_logs.groupBy("ip",).agg(
+    collect_list("timestamp").alias("timestamp"),
+    collect_list("method").alias("method"),
     collect_list("url").alias("urls"),
     collect_list("status").alias("status"),
     collect_list("protocol").alias("protocol")

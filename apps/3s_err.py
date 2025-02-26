@@ -24,7 +24,7 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
 
 # Agrégation des logs par code HTTP
 
-status_error = parsed_logs.groupBy("status","timestamp","method").agg(
+status_error = parsed_logs.groupBy("status","method").agg(
     collect_list("url").alias("url"),
     collect_list("ip").alias("ip"),
     count("status").alias("count")
