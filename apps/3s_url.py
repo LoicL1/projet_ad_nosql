@@ -22,7 +22,7 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
         col("log_parts")[9].cast("int").alias("size")  # Taille de la réponse
     )
 
-# Agrégation des logs par code HTTP
+# Agrégation des logs par url
 status_url = parsed_logs.groupBy("url","timestamp").agg(
     collect_list("method").alias("method"),
     collect_list("status").alias("status"),
