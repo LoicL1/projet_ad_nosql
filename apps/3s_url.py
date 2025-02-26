@@ -23,11 +23,11 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
     )
 
 # Agrégation des logs par code HTTP
-status_url = parsed_logs.groupBy("url").agg(
-    collect_list("timestamp").alias("timestamp"),
+status_url = parsed_logs.groupBy("url","timestamp").agg(
     collect_list("method").alias("method"),
     collect_list("status").alias("status"),
-    collect_list("size").alias("size")
+    collect_list("size").alias("size"),
+    collect_list("ip").alias("ip")
     )
 
 # Fonction pour écrire dans MongoDB (sans écraser)
