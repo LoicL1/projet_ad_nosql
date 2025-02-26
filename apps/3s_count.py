@@ -23,7 +23,10 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
     )
 
 # Agrégation des logs par code HTTP
-status_count = parsed_logs.groupBy("status").count()
+status_count = parsed_logs.groupBy("ip").agg(
+    collect_list("timestamp").alias("timestamp"),
+    collect_list("method").alias("method")
+    )
 
 # Fonction pour écrire dans MongoDB (sans écraser)
 def write_to_mongo(df, epoch_id):

@@ -26,7 +26,8 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
 
 status_sort_by_ip = parsed_logs.groupBy("ip",).agg(
     collect_list("url").alias("urls"),
-    collect_list("status").alias("status")
+    collect_list("status").alias("status"),
+    collect_list("protocol").alias("protocol")
 )
 
 

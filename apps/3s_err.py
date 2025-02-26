@@ -26,7 +26,8 @@ parsed_logs = logs_df.withColumn("log_parts", split(col("value"), " ")).select(
 
 status_error = parsed_logs.groupBy("status","timestamp","method").agg(
     collect_list("url").alias("url"),
-    collect_list("ip").alias("ip")
+    collect_list("ip").alias("ip"),
+    count("status").alias("count")
 )
 # Fonction pour écrire dans MongoDB (sans écraser)
 def write_to_mongo(df, epoch_id):
