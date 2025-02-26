@@ -29,4 +29,4 @@ while True:
     else:
         print("No more logs to send")
         break
-    time.sleep(random.uniform(0.5, 2.0))  # Envoi des logs avec un délai aléatoire entre 0.5s et 2s
+    time.sleep(random.uniform(0.5, 1.0))  # Envoi des logs avec un délai aléatoire entre 0.5s et 2s

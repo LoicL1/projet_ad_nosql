@@ -1,4 +1,4 @@
 web_server.log
 mongo-data/
-data-generator/
+data-generator/web_server.log
 data/
